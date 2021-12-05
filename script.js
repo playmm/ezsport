@@ -12,7 +12,7 @@ const WPInfiniteScroll = (() => {
   const config = {
     api: 'https://razoesparaacreditar.com/wp-json/wp/v2/posts',
     startPage: 0, // 0 for the first page, 1 for the second and so on...
-    postsPerPage: 5 // Number of posts to load per page
+    postsPerPage: 8 // Number of posts to load per page
   };
   
   // Private Properties
