@@ -1,148 +1,118 @@
-function _extends() 
-{_extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};return _extends.apply(this, arguments);}class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      data: [],
-      activeID: 0,
-      imageView: false };
-
-  }
-  componentWillMount() {
-    this._loadData('https://raw.githubusercontent.com/playmm/ezsport/main/football.json');
-  }
-  componentWillUnmount() {
-    this._loadData.abort();
-  }
-  // Fetch data, then clone it to state using destructuring
-  // XHR Fallback
-  _loadData(url) {
-    fetch(url, {
-      method: 'GET' }).
-
-    then(response => response.json()).
-    then(json => this.setState({
-      data: [...json.gallery] })).
-
-    catch(err => {
-      console.log(err.message);
-      try {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.responseType = 'json';
-
-        xhr.onload = () => {
-          let json = xhr.response;
-          this.setState({
-            data: [...json.gallery] });
-
-        };
-
-        xhr.onerror = () => {
-          throw new Error('XMLHttpRequest Failed...');
-        };
-
-        xhr.send();
-      } catch (e) {
-        console.log(e.message);
+// This pen is a real example of how to build an Infinite Scroll
+// in Vanilla JavaScript. I've used Fetch API, Intersection Observer API,
+// and WordPress REST API to fetch posts.
+// Feel free to fork, use and modify this code.
+//
+// Author: Cadu de Castro Alves
+// Twitter: https://twitter.com/castroalves
+// GitHub: https://github.com/castroalves
+const WPInfiniteScroll = (() => {
+  
+  // Basic Configuration
+  const config = {
+    api: 'https://razoesparaacreditar.com/wp-json/wp/v2/posts',
+    startPage: 0, // 0 for the first page, 1 for the second and so on...
+    postsPerPage: 5 // Number of posts to load per page
+  };
+  
+  // Private Properties
+  let postsLoaded = false;
+  let postsContent = document.querySelector('.posts');
+  let btnLoadMore = document.querySelector('.btn-load-more');
+  
+  // Private Methods
+  const loadContent = function() {
+    
+      // Starts with page = 1
+      // Increase every time content is loaded
+      ++config.startPage;
+    
+      // Basic query parameters to filter the API
+      // Visit https://developer.wordpress.org/rest-api/reference/posts/#arguments
+      // For information about other parameters
+      const params = {
+        _embed: true, // Required to fetch images, author, etc
+        page: config.startPage, // Current page of the collection
+        per_page: config.postsPerPage, // Maximum number of posts to be returned by the API
       }
-    });
+    
+      // console.log('_embed', params._embed);
+      // console.log('per_page', params.per_page);
+      // console.log('page', params.page);
+    
+      // Builds the API URL with params _embed, per_page, and page
+      const getApiUrl = (url) => {
+        let apiUrl = new URL(url);
+        apiUrl.search = new URLSearchParams(params).toString();
+        return apiUrl;
+      };
+    
+      // Make a request to the REST API
+      const loadPosts = async () => {
+        const url = getApiUrl(config.api);
+        const request = await fetch(url);
+        const posts = await request.json();
+        
+        // Builds the HTML to show the posts
+        const postsHtml = renderPostHtml(posts);
+        
+        // Adds the HTML into the posts div
+        postsContent.innerHTML += postsHtml;
+        
+        // Required for the infinite scroll
+        postsLoaded = true;
+      };
+    
+      // Builds the HTML to show all posts
+      const renderPostHtml = (posts) => {
+        let postHtml = '';
+        for(let post of posts) {
+          postHtml += postTemplate(post);
+        };
+        return postHtml;
+      };
+    
+      // HTML template for a post
+      const postTemplate = (post) => {
+        return `
+            <div id="post-${post.id}" class="post-item">
+              <img src="${post._embedded['wp:featuredmedia'][0].source_url}" class="post-thumbnail" />
+              <h3 class="post-title"><a href="${post.link}?utm_source=codepen&utm_medium=link" target="_blank">${post.title.rendered}</a></h3>
+              <p class="post-content">${post.excerpt.rendered}</p>
+            </div>`;
+      };
+    
+      loadPosts();
+  };
+  
+  // Where the magic happens
+  // Checks if IntersectionObserver is supported
+  if ('IntersectionObserver' in window) {
+    
+    const loadMoreCallback = (entries, observer) => {
+      entries.forEach((btn) => {
+        if (btn.isIntersecting && postsLoaded === true) {
+          postsLoaded = false;
+          loadContent();
+        }
+      });
+    };
+    
+    // Intersection Observer options
+    const options = {
+      threshold: 1.0 // Execute when button is 100% visible
+    };
+    
+    let loadMoreObserver = new IntersectionObserver(loadMoreCallback, options);
+    loadMoreObserver.observe(btnLoadMore);
   }
-  _openImageView(id) {
-    this.setState({
-      activeID: id,
-      imageView: true });
+  
+  // Public Properties and Methods
+  return {
+    init: loadContent
+  };
+  
+})();
 
-  }
-  _closeImageView() {
-    this.setState({
-      imageView: false });
-
-  }
-  render() {
-    return /*#__PURE__*/(
-      React.createElement("div", { className: "wrapper" },
-
-      this.state.imageView ? /*#__PURE__*/
-      React.createElement(ImageView, _extends({}, this.state.data[this.state.activeID], {
-        _closeImageView: this._closeImageView.bind(this) })) : /*#__PURE__*/
-
-      React.createElement(Gallery, { data: this.state.data,
-        _openImageView: this._openImageView.bind(this) })));
-
-
-
-  }}
-
-
-class ImageView extends React.Component {
-  render() {
-    return /*#__PURE__*/(
-      React.createElement("div", { className: "imageview-wrapper fadeIn" }, /*#__PURE__*/
-      React.createElement("div", { className: "imageview" }, /*#__PURE__*/
-      React.createElement(Image, { CSSClass: "imageview-image",
-        src: this.props.src,
-        alt: this.props.name }), /*#__PURE__*/
-      React.createElement("div", { className: "imageview-info" }, /*#__PURE__*/
-      React.createElement("button", { className: "imageview-close", onClick: this.props._closeImageView }, "x"), /*#__PURE__*/
-      React.createElement("h2", null, this.props.name), /*#__PURE__*/
-      React.createElement("p", null, this.props.desc), /*#__PURE__*/
-      React.createElement("h3", null, "Tags"), /*#__PURE__*/
-      React.createElement("ul", null,
-      this.props.tags.map(tag => /*#__PURE__*/React.createElement("li", null, tag)))))));
-
-
-
-
-
-  }}
-
-
-class Gallery extends React.Component {
-  render() {
-    return /*#__PURE__*/(
-      React.createElement("div", { className: "gallery fadeIn" },
-
-      this.props.data.map((data) => /*#__PURE__*/
-      React.createElement(Tile, { key: data.id,
-        id: data.id,
-        src: data.src,
-        name: data.name,
-        desc: data.desc,
-        _openImageView: this.props._openImageView }))));
-
-
-
-
-  }}
-
-
-class Tile extends React.Component {
-  _handleClick() {
-    this.props._openImageView(this.props.id);
-  }
-  render() {
-    return /*#__PURE__*/(
-      React.createElement("div", { className: "gallery-tile", onClick: this._handleClick.bind(this) }, /*#__PURE__*/
-      React.createElement("div", { className: "picture-info" }, /*#__PURE__*/
-      React.createElement("h2", null, this.props.name)), /*#__PURE__*/
-
-
-      React.createElement(Image, {
-        CSSClass: "tile-image",
-        src: this.props.src,
-        alt: this.props.name })));
-
-
-  }}
-
-
-const Image = (props) => /*#__PURE__*/
-React.createElement("img", {
-  className: props.CSSClass,
-  src: props.src,
-  alt: props.name });
-
-
-// Render app
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));
+// Initialize Infinite Scroll
+WPInfiniteScroll.init();
