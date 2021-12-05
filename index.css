@@ -1,0 +1,74 @@
+body{
+background-color: #000000;
+margin: 0px;
+padding: 0px;
+width: 100%;
+}
+
+.header {
+background-color: #181818;
+padding: 2px;
+box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19);
+text-align: center;
+position: fixed;
+overflow: hidden;
+top : 0px;
+height: auto;
+width: 100%;
+}
+ 
+.footer {
+  width: 100%;
+  height: auto;
+  background-color: #000000;
+  padding: 5px;
+  text-align: center;
+}
+ 
+.Ads{
+width: 100%;
+height: auto;
+overflow: hidden;
+position: fixed;
+bottom : 0px;
+}
+ 
+marquee{
+ padding: 5px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: sans-serif;
+      }
+
+div.channel1 {
+text-align: center;
+margin: 15px;
+width: 90%;
+height: auto;
+background-color: #181818;
+padding: 5px;
+border-radius: .8rem;
+box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19);
+}
+
+.main{
+margin-top : 50px;
+margin-top: 80px;
+width: 100%;
+ }
+    
+h3 {
+    font-family: "Times New Roman", Times, serif;
+font-size: 22px;
+ color: #f89808;
+  text-align: center;
+}
+
+p {
+  margin-top: 30px;
+font-family: verdana;
+  font-size: 15px;
+  color: #757575;
+  text-align: center;
+}
