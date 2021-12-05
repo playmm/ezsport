@@ -9,7 +9,7 @@ function _extends()
 
   }
   componentWillMount() {
-    this._loadData('https://s3-us-west-2.amazonaws.com/s.cdpn.io/735173/rpg-2-data.json');
+    this._loadData('https://raw.githubusercontent.com/playmm/ezsport/main/football.json');
   }
   componentWillUnmount() {
     this._loadData.abort();
