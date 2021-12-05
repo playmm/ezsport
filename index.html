@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- css -->
 <link rel="icon" href="EzSport.png" type="image/PNG" sizes="16x16">
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
 <link rel="stylesheet" href="style.css">
 
 </head>
@@ -14,13 +15,19 @@
 <div class="header">
 <h3>Ez Sport</h3>
 </div>
-<div class="circle"></div>
-<!-- partial:index.partial.html -->
-<div id="app"></div>
+
+<div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="posts"></div>
+          <div class="load-more">
+            <a href="#" class="btn btn-primary btn-lg btn-block btn-load-more">Load More</a>
+          </div>
+        </div>
+      </div>
+    </div>
 <!-- partial -->
-<script src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js'></script>
-<script src="script.js"></script>
+<script  src="script.js"></script>
                                                                                                                                                                                                                                                                                               
 </body>
 </html>
