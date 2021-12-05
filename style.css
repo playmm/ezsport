@@ -15,7 +15,7 @@ text-align: center;
 position: fixed;
 overflow: hidden;
 top : 0px;
-height: 30%;
+height: auto;
 width: 100%;
 }
 
